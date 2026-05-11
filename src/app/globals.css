@@ -3,37 +3,44 @@
 @tailwind utilities;
 
 :root {
-  --bg: #000000;
-  --surface: #111111;
-  --accent: #ffffff;
-  --text-primary: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.5);
-  --border: rgba(255, 255, 255, 0.1);
+  --bg: #030810;
+  --surface: #0a1628;
+  --accent: #0088ff;
+  --accent-bright: #00ccff;
+  --text-primary: #e0f0ff;
+  --text-muted: rgba(138, 180, 216, 0.5);
+  --border: rgba(0, 136, 255, 0.12);
 }
 
 body {
-  background: #000000;
-  color: #ffffff;
+  background: #030810;
+  color: #e0f0ff;
   font-family: "Calibri", "Segoe UI", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Terminal Shell ── */
 .terminal-shell {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(3, 8, 16, 0.75);
+  border: 1px solid rgba(0, 136, 255, 0.1);
   border-radius: 24px;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 0 60px rgba(0, 100, 255, 0.03),
+    inset 0 1px 0 rgba(0, 136, 255, 0.05);
 }
 
 .quantum-shell {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(3, 8, 16, 0.75);
+  border: 1px solid rgba(0, 136, 255, 0.1);
   border-radius: 28px;
+  backdrop-filter: blur(20px);
 }
 
+/* ── Typography ── */
 .terminal-heading {
   font-family: "Calibri", "Segoe UI", sans-serif;
-  color: #ffffff;
+  color: #e0f0ff;
   font-size: 2.2rem;
   font-weight: 300;
   letter-spacing: -0.03em;
@@ -42,117 +49,130 @@ body {
 
 .quantum-heading {
   font-family: "VT323", monospace;
-  color: #ffffff;
+  color: #0088ff;
 }
 
+/* ── Badge ── */
 .terminal-badge {
   display: inline-flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 136, 255, 0.06);
+  border: 1px solid rgba(0, 136, 255, 0.12);
   padding: 6px 14px;
   border-radius: 999px;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 160, 255, 0.6);
 }
 
+/* ── Buttons ── */
 .terminal-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 136, 255, 0.12);
+  background: rgba(0, 136, 255, 0.04);
   padding: 12px 20px;
   border-radius: 14px;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 180, 255, 0.7);
   cursor: pointer;
   transition: all 0.25s ease;
   font-weight: 400;
 }
 
 .terminal-button:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.18);
-  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 136, 255, 0.08);
+  border-color: rgba(0, 136, 255, 0.25);
+  color: rgba(0, 200, 255, 0.9);
 }
 
 .terminal-button-primary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: #ffffff;
+  border: 1px solid rgba(0, 136, 255, 0.3);
+  background: linear-gradient(135deg, #0066ff, #0088ff);
   padding: 12px 20px;
   border-radius: 14px;
   font-size: 0.85rem;
-  color: #000000;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.25s ease;
   font-weight: 600;
+  box-shadow: 0 0 20px rgba(0, 100, 255, 0.15);
 }
 
 .terminal-button-primary:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #0077ff, #0099ff);
+  box-shadow: 0 0 30px rgba(0, 100, 255, 0.25);
 }
 
+/* ── Cards ── */
 .terminal-card {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 136, 255, 0.03);
+  border: 1px solid rgba(0, 136, 255, 0.08);
   border-radius: 20px;
   padding: 20px;
+  transition: all 0.25s ease;
+}
+
+.terminal-card:hover {
+  background: rgba(0, 136, 255, 0.06);
+  border-color: rgba(0, 136, 255, 0.15);
 }
 
 .terminal-code {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 180, 255, 0.5);
   font-family: "VT323", monospace;
 }
 
 .terminal-border-glow {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 136, 255, 0.12);
 }
 
+/* ── Form Inputs ── */
 .terminal-label {
   display: block;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 160, 255, 0.4);
   margin-bottom: 6px;
 }
 
 .terminal-input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 136, 255, 0.03);
+  border: 1px solid rgba(0, 136, 255, 0.1);
   border-radius: 12px;
   padding: 11px 14px;
   font-size: 0.9rem;
-  color: #ffffff;
+  color: #e0f0ff;
   font-family: "Calibri", "Segoe UI", sans-serif;
   outline: none;
   transition: all 0.2s ease;
 }
 
 .terminal-input::placeholder {
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(0, 160, 255, 0.2);
 }
 
 .terminal-input:focus {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(0, 136, 255, 0.3);
+  background: rgba(0, 136, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 100, 255, 0.05);
 }
 
 .terminal-textarea {
   width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 136, 255, 0.03);
+  border: 1px solid rgba(0, 136, 255, 0.1);
   border-radius: 12px;
   padding: 11px 14px;
   font-size: 0.9rem;
-  color: #ffffff;
+  color: #e0f0ff;
   font-family: "Calibri", "Segoe UI", sans-serif;
   outline: none;
   resize: vertical;
@@ -161,20 +181,23 @@ body {
 }
 
 .terminal-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(0, 160, 255, 0.2);
 }
 
 .terminal-textarea:focus {
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(0, 136, 255, 0.3);
+  background: rgba(0, 136, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 100, 255, 0.05);
 }
 
+/* ── Panel ── */
 .terminal-panel {
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 80, 160, 0.03);
+  border: 1px solid rgba(0, 136, 255, 0.06);
   border-radius: 24px;
 }
 
+/* ── Scanlines ── */
 .scanlines {
   position: relative;
 }
@@ -183,11 +206,18 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.005) 2px, rgba(255, 255, 255, 0.005) 4px);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 136, 255, 0.008) 2px,
+    rgba(0, 136, 255, 0.008) 4px
+  );
   pointer-events: none;
   border-radius: inherit;
 }
 
+/* ── Field Grid ── */
 .field-grid {
   display: grid;
   gap: 14px;
@@ -200,7 +230,28 @@ body {
   }
 }
 
+/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.12); }
+::-webkit-scrollbar-thumb { background: rgba(0, 136, 255, 0.1); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 136, 255, 0.2); }
+/* ── Resume Page Specific ── */
+.terminal-shell.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-shell.scanlines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 136, 255, 0.005) 2px,
+    rgba(0, 136, 255, 0.005) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}

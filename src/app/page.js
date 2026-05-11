@@ -1,95 +1,37 @@
 "use client";
 
-import { useRef, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float, Stars, MeshDistortMaterial } from "@react-three/drei";
+import dynamic from "next/dynamic";
 import Link from "next/link";
+import BackgroundAnimation from "./BackgroundAnimation";
+import SpaceHeading from "./SpaceHeading";
 
-function QuantumOrb() {
-  const meshRef = useRef();
-  useFrame(({ clock }) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.003;
-      meshRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.3) * 0.2;
-    }
-  });
-  return (
-    <Float speed={1.5} rotationIntensity={0.8} floatIntensity={1.5}>
-      <mesh ref={meshRef} scale={1.8}>
-        <icosahedronGeometry args={[1, 1]} />
-        <MeshDistortMaterial
-          color="#ffffff"
-          emissive="#ffffff"
-          emissiveIntensity={1}
-          wireframe
-          distort={0.2}
-          speed={2}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-function FloatingParticles() {
-  const ref = useRef();
-  const count = 60;
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const r = 3 + Math.random() * 5;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pos[i * 3 + 2] = r * Math.cos(phi);
-    }
-    return pos;
-  }, []);
-
-  useFrame(({ clock }) => {
-    if (ref.current) ref.current.rotation.y = clock.getElapsedTime() * 0.03;
-  });
-
-  return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" array={positions} count={count} itemSize={3} />
-      </bufferGeometry>
-      <pointsMaterial size={0.02} color="#ffffff" transparent opacity={0.4} sizeAttenuation />
-    </points>
-  );
-}
+const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
 const fade = {
   hidden: { opacity: 0, y: 25 },
   show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.7, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] },
   }),
 };
 
 export default function Home() {
   return (
-    <div className="relative h-screen overflow-hidden bg-black text-white">
+    <div className="relative h-screen overflow-hidden bg-[#030810] text-white">
 
-      {/* Glow */}
-      <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-white/[0.03] blur-[180px]" />
+      {/* Animated background */}
+      <BackgroundAnimation />
 
-      {/* Grid */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:80px_80px]" />
+      {/* Deep blue ambient glows */}
+      <div className="pointer-events-none absolute left-1/2 top-[-200px] h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#0066ff]/8 blur-[200px]" />
+      <div className="pointer-events-none absolute bottom-[-150px] right-[20%] h-[400px] w-[400px] rounded-full bg-[#0088ff]/5 blur-[180px]" />
+      <div className="pointer-events-none absolute left-[10%] top-[30%] h-[200px] w-[200px] rounded-full bg-[#00aaff]/4 blur-[120px]" />
 
-      {/* 3D */}
-      <div className="pointer-events-none absolute inset-0 opacity-30">
-        <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-          <ambientLight intensity={0.2} />
-          <pointLight position={[5, 5, 5]} intensity={1} color="#ffffff" />
-          <QuantumOrb />
-          <FloatingParticles />
-          <Stars radius={50} depth={40} count={600} factor={2} fade speed={0.5} />
-          <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
-        </Canvas>
+      {/* 3D Scene */}
+      <div className="pointer-events-none absolute inset-0 opacity-35">
+        <Scene />
       </div>
 
       {/* Content */}
@@ -103,63 +45,149 @@ export default function Home() {
             className="terminal-shell scanlines overflow-hidden"
           >
             {/* Header bar */}
-            <div className="flex items-center justify-between border-8 py-3">
-              <div className="flex gap-b border-white/[0.05] px-2">
-                <div className="h-2.5 w-2.5 rounded-full bg-white/15" />
-                <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-                <div className="h-2.5 w-2.5 rounded-full bg-white/[0.06]" />
+            <div className="flex items-center justify-between border-b border-[#0088ff]/10 px-8 py-3 bg-[#0088ff]/[0.02]">
+              <div className="flex gap-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-[#ff4444]/60" />
+                <div className="h-2.5 w-2.5 rounded-full bg-[#ffaa00]/60" />
+                <div className="h-2.5 w-2.5 rounded-full bg-[#00aaff]/60" />
               </div>
-              <span className="text-[10px] uppercase tracking-[0.4em] text-white/20" style={{ fontFamily: "'VT323', monospace" }}>
+              <span
+                className="text-[10px] uppercase tracking-[0.4em] text-[#0088ff]/40"
+                style={{ fontFamily: "'VT323', monospace" }}
+              >
                 quantum://home
               </span>
-              <div className="w-6" />
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-[#00ff88]/50 animate-pulse" />
+                <span className="text-[9px] uppercase tracking-[0.2em] text-[#00ff88]/30">online</span>
+              </div>
             </div>
 
             {/* Body */}
             <div className="px-10 py-10 sm:px-16 sm:py-12">
 
-              <motion.div variants={fade} initial="hidden" animate="show" custom={0} className="mb-6 flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-white/40 animate-pulse" />
-                <span className="text-[11px] uppercase tracking-[0.35em] text-white/25" style={{ fontFamily: "'VT323', monospace" }}>
-                  system.online
+              <motion.div
+                variants={fade}
+                initial="hidden"
+                animate="show"
+                custom={0}
+                className="mb-6 flex items-center gap-3"
+              >
+                <div className="h-px w-8 bg-[#0088ff]/30" />
+                <span
+                  className="text-[11px] uppercase tracking-[0.4em] text-[#0088ff]/40"
+                  style={{ fontFamily: "'VT323', monospace" }}
+                >
+                  &gt; Welcome To Resume Builder
                 </span>
               </motion.div>
 
-              <motion.h1 variants={fade} initial="hidden" animate="show" custom={1} className="text-7xl font-extralight leading-[0.9] tracking-tight sm:text-8xl lg:text-9xl">
-                Quantum
-              </motion.h1>
+              {/* ── Space Heading with Orbiting Particles ── */}
+              <div className="relative mb-6" style={{ height: "clamp(200px, 35vh, 320px)" }}>
+                <SpaceHeading />
 
-              <motion.h1 variants={fade} initial="hidden" animate="show" custom={2} className="mb-6 text-7xl font-extralight leading-[0.9] tracking-tight text-white/40 sm:text-8xl lg:text-9xl">
-                Resume
-              </motion.h1>
+                {/* Central glow behind text */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-[120px] w-[300px] rounded-full bg-[#0066ff]/10 blur-[80px] sm:h-[160px] sm:w-[500px]" />
+                </div>
 
-              <motion.div variants={fade} initial="hidden" animate="show" custom={2.5} className="mb-5 h-px w-20 bg-white/10" />
+                {/* The heading text centered */}
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
+                  <motion.h1
+                    variants={fade}
+                    initial="hidden"
+                    animate="show"
+                    custom={1}
+                    className="text-7xl font-extralight leading-[0.9] tracking-tight sm:text-8xl lg:text-9xl xl:text-[10rem]"
+                  >
+                    <span className="text-white/90">Resume</span>
+                  </motion.h1>
 
-              <motion.p variants={fade} initial="hidden" animate="show" custom={3} className="mb-8 max-w-md text-base leading-relaxed text-white/30 font-light">
-                Build, preview, and export terminal-grade resumes. One pipeline. Zero noise.
+                  <motion.h1
+                    variants={fade}
+                    initial="hidden"
+                    animate="show"
+                    custom={2}
+                    className="text-7xl font-extralight leading-[0.9] tracking-tight sm:text-8xl lg:text-9xl xl:text-[10rem]"
+                  >
+                    <span className="bg-gradient-to-r from-[#0088ff] to-[#00ccff] bg-clip-text text-transparent">
+                      Builder
+                    </span>
+                  </motion.h1>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <motion.div
+                variants={fade}
+                initial="hidden"
+                animate="show"
+                custom={2.5}
+                className="mb-5 flex items-center justify-center gap-3"
+              >
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#0088ff]/40" />
+                <div className="h-1 w-1 rounded-full bg-[#0088ff]/40" />
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#0088ff]/40" />
+              </motion.div>
+
+              {/* Subtext */}
+              <motion.p
+                variants={fade}
+                initial="hidden"
+                animate="show"
+                custom={3}
+                className="mb-8 text-center text-base leading-relaxed text-[#8ab4d8]/60 font-light"
+              >
+                Create Resumes in Minutes.
               </motion.p>
 
-              <motion.div variants={fade} initial="hidden" animate="show" custom={4} className="mb-10 flex gap-14">
+              {/* Stats */}
+              <motion.div
+                variants={fade}
+                initial="hidden"
+                animate="show"
+                custom={4}
+                className="mb-10 flex justify-center gap-14"
+              >
                 {[
                   { v: "4", l: "templates" },
                   { v: "PDF", l: "export" },
                   { v: "Live", l: "preview" },
                 ].map((s) => (
-                  <div key={s.l}>
-                    <div className="text-xl font-light text-white/60">{s.v}</div>
-                    <div className="mt-1 text-[9px] uppercase tracking-[0.3em] text-white/20">{s.l}</div>
+                  <div key={s.l} className="group cursor-default">
+                    <div className="text-xl font-light text-[#0088ff]/70 transition-colors group-hover:text-[#00ccff]">
+                      {s.v}
+                    </div>
+                    <div className="mt-1 text-[9px] uppercase tracking-[0.3em] text-[#8ab4d8]/25 group-hover:text-[#8ab4d8]/40 transition-colors">
+                      {s.l}
+                    </div>
                   </div>
                 ))}
               </motion.div>
 
-              <motion.div variants={fade} initial="hidden" animate="show" custom={5} className="flex gap-4">
+              {/* CTA Buttons */}
+              <motion.div
+                variants={fade}
+                initial="hidden"
+                animate="show"
+                custom={5}
+                className="flex justify-center gap-4"
+              >
                 <Link href="/signup">
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="terminal-button-primary min-w-[180px] justify-center py-3.5">
+                  <motion.div
+                    whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(0,136,255,0.15)" }}
+                    whileTap={{ scale: 0.97 }}
+                    className="terminal-button-primary min-w-[180px] justify-center py-3.5"
+                  >
                     build resume
                   </motion.div>
                 </Link>
                 <Link href="/login">
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="terminal-button min-w-[180px] justify-center py-3.5">
+                  <motion.div
+                    whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(0,136,255,0.08)" }}
+                    whileTap={{ scale: 0.97 }}
+                    className="terminal-button min-w-[180px] justify-center py-3.5"
+                  >
                     sign in
                   </motion.div>
                 </Link>
@@ -168,8 +196,19 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.div variants={fade} initial="hidden" animate="show" custom={6} className="mt-4 text-center text-[9px] uppercase tracking-[0.35em] text-white/10">
-            powered by quantum engine
+          {/* Footer */}
+          <motion.div
+            variants={fade}
+            initial="hidden"
+            animate="show"
+            custom={6}
+            className="mt-4 flex items-center justify-center gap-4"
+          >
+            <div className="h-px w-10 bg-[#0088ff]/10" />
+            <span className="text-[9px] uppercase tracking-[0.35em] text-[#0088ff]/15">
+              powered by Rudra & Omm
+            </span>
+            <div className="h-px w-10 bg-[#0088ff]/10" />
           </motion.div>
 
         </div>
