@@ -1,26 +1,466 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=VT323&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d0d0d;
+  --foreground: #d7ffd0;
+
+  --terminal-green: #39ff14;
+  --terminal-green-soft: rgba(57, 255, 20, 0.08);
+  --terminal-green-border: rgba(57, 255, 20, 0.18);
+
+  --terminal-panel: rgba(12, 12, 12, 0.82);
+  --terminal-panel-strong: rgba(18, 18, 18, 0.94);
+
+  --terminal-text-soft: rgba(215, 255, 208, 0.72);
+  --terminal-text-dim: rgba(215, 255, 208, 0.45);
+
+  --terminal-shadow:
+    0 0 0 1px rgba(57, 255, 20, 0.08),
+    0 0 40px rgba(57, 255, 20, 0.08),
+    0 0 120px rgba(57, 255, 20, 0.03);
+
+  --grid-color: rgba(57, 255, 20, 0.04);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-terminal: var(--terminal-green);
+  --color-terminal-soft: var(--terminal-green-soft);
+
+  --font-sans: "Fira Code", monospace;
+  --font-mono: "Fira Code", monospace;
+  --font-terminal: "VT323", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #080808;
+    --foreground: #d7ffd0;
   }
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(57, 255, 20, 0.015) 50%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at top,
+      rgba(57, 255, 20, 0.08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(57, 255, 20, 0.05),
+      transparent 24%
+    ),
+    var(--background);
+
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family: "Fira Code", monospace;
+
+  position: relative;
+}
+
+/* Quantum Grid Background */
+body::before {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+
+  background-size: 40px 40px;
+
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Scanline Overlay */
+body::after {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.025) 0%,
+      rgba(255, 255, 255, 0.01) 50%,
+      rgba(255, 255, 255, 0.025) 100%
+    );
+
+  background-size: 100% 4px;
+
+  opacity: 0.15;
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+::selection {
+  background: rgba(57, 255, 20, 0.25);
+  color: #ffffff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 20, 0.2);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(57, 255, 20, 0.35);
+}
+
+/* ===== TERMINAL COMPONENTS ===== */
+
+@layer components {
+
+  .quantum-shell {
+    @apply relative overflow-hidden rounded-[28px];
+
+    background: var(--terminal-panel);
+    border: 1px solid var(--terminal-green-border);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow: var(--terminal-shadow);
+  }
+
+  .quantum-panel {
+    @apply rounded-[24px];
+
+    background: var(--terminal-panel-strong);
+
+    border: 1px solid rgba(57, 255, 20, 0.12);
+
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.02),
+      0 0 24px rgba(57,255,20,0.04);
+  }
+
+  .quantum-heading {
+    font-family: "VT323", monospace;
+
+    color: var(--terminal-green);
+
+    letter-spacing: 0.08em;
+
+    text-shadow:
+      0 0 12px rgba(57,255,20,0.5),
+      0 0 40px rgba(57,255,20,0.18);
+
+    @apply text-5xl leading-none sm:text-6xl;
+  }
+
+  .quantum-subheading {
+    color: var(--terminal-text-soft);
+
+    @apply text-sm leading-7 sm:text-base;
+  }
+
+  .terminal-command {
+    @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs;
+
+    border: 1px solid rgba(57,255,20,0.16);
+
+    background: rgba(57,255,20,0.05);
+
+    color: rgba(215,255,208,0.82);
+
+    letter-spacing: 0.18em;
+
+    text-transform: uppercase;
+  }
+
+  .terminal-input {
+    @apply w-full rounded-2xl px-4 py-3 outline-none transition-all duration-300;
+
+    background: rgba(0,0,0,0.55);
+
+    border: 1px solid rgba(57,255,20,0.14);
+
+    color: var(--foreground);
+
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.01);
+  }
+
+  .terminal-input::placeholder {
+    color: rgba(215,255,208,0.35);
+  }
+
+  .terminal-input:focus {
+    border-color: rgba(57,255,20,0.45);
+
+    box-shadow:
+      0 0 0 4px rgba(57,255,20,0.06),
+      0 0 30px rgba(57,255,20,0.08);
+  }
+
+  .terminal-textarea {
+    @apply terminal-input min-h-[140px] resize-y;
+  }
+
+  .terminal-label {
+    color: rgba(215,255,208,0.72);
+
+    letter-spacing: 0.18em;
+
+    @apply mb-2 block text-[11px] uppercase;
+  }
+
+  .terminal-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm transition-all duration-300;
+
+    border: 1px solid rgba(57,255,20,0.18);
+
+    background: rgba(57,255,20,0.08);
+
+    color: var(--foreground);
+
+    box-shadow:
+      0 0 20px rgba(57,255,20,0.05);
+  }
+
+  .terminal-button:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(57,255,20,0.35);
+
+    background: rgba(57,255,20,0.12);
+
+    box-shadow:
+      0 0 35px rgba(57,255,20,0.08);
+  }
+
+  .terminal-button:active {
+    transform: scale(0.98);
+  }
+
+  .terminal-button-primary {
+    background:
+      linear-gradient(
+        135deg,
+        rgba(57,255,20,0.16),
+        rgba(57,255,20,0.08)
+      );
+
+    border: 1px solid rgba(57,255,20,0.28);
+
+    box-shadow:
+      0 0 25px rgba(57,255,20,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .terminal-badge {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px];
+
+    background: rgba(57,255,20,0.08);
+
+    border: 1px solid rgba(57,255,20,0.18);
+
+    color: rgba(215,255,208,0.82);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.2em;
+  }
+
+  .terminal-card {
+    @apply rounded-[24px] p-5;
+
+    background: rgba(0,0,0,0.42);
+
+    border: 1px solid rgba(57,255,20,0.12);
+
+    transition: all 0.3s ease;
+  }
+
+  .terminal-card:hover {
+    transform: translateY(-4px);
+
+    border-color: rgba(57,255,20,0.24);
+
+    box-shadow:
+      0 0 30px rgba(57,255,20,0.08);
+  }
+
+  .terminal-glow {
+    box-shadow:
+      0 0 30px rgba(57,255,20,0.12);
+  }
+
+  .terminal-border-glow {
+    border: 1px solid rgba(57,255,20,0.22);
+
+    box-shadow:
+      0 0 18px rgba(57,255,20,0.06);
+  }
+
+  .terminal-section-title {
+    font-family: "VT323", monospace;
+
+    color: var(--terminal-green);
+
+    letter-spacing: 0.08em;
+
+    @apply text-3xl;
+  }
+
+  .terminal-muted {
+    color: var(--terminal-text-dim);
+  }
+
+  .terminal-code {
+    font-family: "Fira Code", monospace;
+
+    color: rgba(57,255,20,0.82);
+
+    @apply text-sm;
+  }
+
+  .blinking-cursor::after {
+    content: "▋";
+
+    margin-left: 3px;
+
+    color: var(--terminal-green);
+
+    animation: blink 1s infinite;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes floatOrb {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    box-shadow:
+      0 0 10px rgba(57,255,20,0.05);
+  }
+
+  50% {
+    box-shadow:
+      0 0 28px rgba(57,255,20,0.14);
+  }
+
+  100% {
+    box-shadow:
+      0 0 10px rgba(57,255,20,0.05);
+  }
+}
+
+.float-orb {
+  animation: floatOrb 5s ease-in-out infinite;
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+
+  .quantum-heading {
+    font-size: 3rem;
+  }
+
+  .terminal-card {
+    padding: 1rem;
+  }
+}
+
+/* ===== PRINT MODE ===== */
+
+@media print {
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .quantum-shell,
+  .quantum-panel,
+  .terminal-card {
+    box-shadow: none !important;
+    background: white !important;
+    border: 1px solid #ddd !important;
+  }
 }
