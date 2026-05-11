@@ -9,7 +9,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import ResumeForm from '@/components/ResumeForm';
 import PreviewSection from '@/components/PreviewSection';
 import TemplateSwitcher from '@/components/TemplateSwitcher';
-import DownloadButton from '@/components/Downloadbutton';
+import DownloadButton from '@/components/DownloadButton';
 import { defaultResumeData } from '@/utils/constants';
 import { loadResume, saveResume } from '@/lib/saveResume';
 
