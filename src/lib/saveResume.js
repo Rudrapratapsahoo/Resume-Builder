@@ -1,5 +1,21 @@
 import { supabase } from "./supabase";
 
+// Load resume from localStorage
+export const loadResume = () => {
+  if (typeof window === "undefined")
+    return null;
+
+  const saved =
+    localStorage.getItem(
+      "resumeData"
+    );
+
+  return saved
+    ? JSON.parse(saved)
+    : null;
+};
+
+// Save resume to Supabase
 export const saveResume = async (
   resumeData,
   userId
@@ -18,6 +34,7 @@ export const saveResume = async (
   return { data, error };
 };
 
+// Get all resumes of user
 export const getUserResumes =
   async (userId) => {
     const { data, error } =
@@ -32,8 +49,12 @@ export const getUserResumes =
     return { data, error };
   };
 
+// Update resume
 export const updateResume =
-  async (resumeId, updatedData) => {
+  async (
+    resumeId,
+    updatedData
+  ) => {
     const { data, error } =
       await supabase
         .from("resumes")
@@ -44,6 +65,7 @@ export const updateResume =
     return { data, error };
   };
 
+// Delete resume
 export const deleteResume =
   async (resumeId) => {
     const { data, error } =

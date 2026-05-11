@@ -14,3 +14,13 @@ export const capitalize = (
     text.slice(1)
   );
 };
+export const cn = (...classes) => {
+  return classes.filter(Boolean).join(' ');
+};
+export const initials = (name = "") => {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+};
